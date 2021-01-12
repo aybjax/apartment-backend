@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Image;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -18,18 +19,44 @@ class UserController extends Controller
         //
     }
 
+    /** get input fields for creating user */
+
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        
-        return [
-            "status" => 'ok'
-        ];
+        $user = User::create([
+            "username" => $request->input('username'),
+            "firstname" => $request->input('firstname'),
+            "lastname" => $request->input('lastname'),
+            "email" => $request->input('email'),
+            "phone" => $request->input('phone'),
+            "password" => $request->input('password'),
+        ]);
+
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+                $path = $request->file('image')->store('images');
+
+                // $image = Image::create([
+                //     'path' => $path,
+                // ]);
+
+                $image = new Image;
+
+                $image->path = $path;
+
+                $user->image()->save($image);
+        }
+
+        $user->save();
+
+        return response()->json([
+            $request->all()
+        ], 201);
     }
 
     /**
@@ -38,9 +65,13 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(Request $request, User $user)
     {
-        //
+        error_log(json_encode($request->all()));
+
+        return response()->json([
+            "hello" => "there"
+        ]);
     }
 
     /**

@@ -12,18 +12,12 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are not mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-        'id',
-        'username',
-        'firsname',
-        'lastname',
-        'phone',
-        'email',
-        'password',
+    protected $guarded = [
+        
     ];
 
     /**
@@ -45,8 +39,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function images()
+    public function image()
     {
-        return $this->morphMany(Image::class, 'imageable');
+        return $this->morphOne(Image::class, 'imageable');
     }
 }

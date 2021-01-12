@@ -20,7 +20,7 @@ class CreateApartmentsTable extends Migration
             $table->unsignedDecimal('price', 10, 2);
             $table->string('street', 20);
             $table->unsignedDecimal('home', 6, 3);
-            $table->unsignedDecimal('apartment', 4, 0);
+            $table->unsignedDecimal('apartment', 4);
             $table->timestamps();
         });
     }

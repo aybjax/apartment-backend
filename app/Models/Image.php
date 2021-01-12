@@ -10,13 +10,13 @@ class Image extends Model
     use HasFactory;
 
     protected $fillable = [
-        'path'
+        'path',
     ];
 
     /** 
      * morphTo User or Apartment
      */
-    public function Imageable()
+    public function imageable()
     {
         return $this->morphTo();
     }

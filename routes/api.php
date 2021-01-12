@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,14 +22,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['middleware' => ['api']], function(){
     Route::any('/status', function(){
-        return [
+        return response()->json([
             'status' => 'alive',
-        ];
+        ], 200);
     })->name('health');
 
     Route::post('/register', [UserController::class, 'store'])->name('register.user');
 
-    
+    Route::post('/login', [UserController::class, 'show'])->name('login.user');
+
+    Route::post('/register-apartment', [ApartmentController::class, 'store'])->name('register.apartment');
+
 });
 
 
