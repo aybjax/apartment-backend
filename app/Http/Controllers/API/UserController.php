@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
-use App\Models\Image;
 use App\Models\User;
+use App\Models\Image;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -35,19 +37,17 @@ class UserController extends Controller
             "lastname" => $request->input('lastname'),
             "email" => $request->input('email'),
             "phone" => $request->input('phone'),
-            "password" => $request->input('password'),
+            "password" => Hash::make($request->password),
         ]);
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
                 $path = $request->file('image')->store('images');
 
-                // $image = Image::create([
-                //     'path' => $path,
-                // ]);
+                $url = Storage::url($path);
 
                 $image = new Image;
 
-                $image->path = $path;
+                $image->path = $url;
 
                 $user->image()->save($image);
         }
@@ -55,8 +55,12 @@ class UserController extends Controller
         $user->save();
 
         return response()->json([
-            $request->all()
+            'url' => $url
         ], 201);
+
+        // return response()->json([
+        //     $request->all()
+        // ], 201);
     }
 
     /**
@@ -65,9 +69,18 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, User $user)
+    public function show(Request $request)
     {
-        error_log(json_encode($request->all()));
+        $email = $request->email;
+        $password = $request->password;
+
+        $user = User::where('email', $email)->first();
+
+        if (!Hash::check($password, $user->password)) {
+            return response()->json([
+                "message" => "user credentials are wrong",
+            ], 401);
+        }
 
         return response()->json([
             "hello" => "there"
