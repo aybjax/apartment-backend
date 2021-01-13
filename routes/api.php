@@ -27,12 +27,19 @@ Route::group(['middleware' => ['api']], function(){
         ], 200);
     })->name('health');
 
-    Route::post('/register', [UserController::class, 'store'])->name('register.user');
+    /** */
+    Route::post('/register', [UserController::class, 'store'])
+        ->name('register.user');
 
-    Route::post('/login', [UserController::class, 'login'])->name('login.user');
+    Route::post('/login', [UserController::class, 'login'])
+        ->name('login.user');
 
-    Route::post('/register-apartment', [ApartmentController::class, 'store'])->name('register.apartment');
+    Route::post('/user', [UserController::class, 'me'])
+        ->name('me.user');
 
+    /** */
+    Route::post('/register-apartment', [ApartmentController::class, 'store'])
+        ->name('register.apartment');
 });
 
 

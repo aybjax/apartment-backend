@@ -24,7 +24,17 @@ class UserController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        $user = auth()->user();
+
+        return response()->json([
+            'id' => $user->id,
+            'username' => $user->username,
+            'firstname' => $user->firstname,
+            'lastname' => $user->lastname,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'image' => $user->image->path,
+        ]);
     }
 
     /**
@@ -81,30 +91,6 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Request $request)
-    {
-        $email = $request->email;
-        $password = $request->password;
-
-        $user = User::where('email', $email)->first();
-
-        if (!Hash::check($password, $user->password)) {
-            return response()->json([
-                "message" => "user credentials are wrong",
-            ], 401);
-        }
-
-        return response()->json([
-            "hello" => "there"
-        ]);
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -113,7 +99,9 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $user = auth()->user();
+
+        
     }
 
     /**
