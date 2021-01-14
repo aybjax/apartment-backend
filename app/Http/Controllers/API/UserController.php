@@ -51,10 +51,9 @@ class UserController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $user = JWTAuth::user();
-
-        return response()->json(compact('token', 'user'));
-        // return $this->respondWithToken($token);
+        // $user = JWTAuth::user();
+        // return response()->json(compact('token', 'user'));
+        return $this->respondWithToken($token);
     }
 
     /**
@@ -104,8 +103,6 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $user = auth()->user();
-
-        
     }
 
     /**
@@ -150,10 +147,23 @@ class UserController extends Controller
      */
     protected function respondWithToken($token)
     {
+        $user = auth()->user();
+
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'token_info' => [
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => auth()->factory()->getTTL() * 60,
+            ],
+            'user_info' => [
+                'id' => $user->id,
+                'username' => $user->username,
+                'firstname' => $user->firstname,
+                'lastname' => $user->lastname,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'image' => $user->image->path,
+            ],
         ]);
     }
 }
