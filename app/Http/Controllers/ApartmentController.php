@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Apartment;
 use App\Models\Image;
+use App\Models\Apartment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ApartmentController extends Controller
 {
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        $apartment = Apartment::create([
+        $apartment = new Apartment([
             'title' => $request->input('title'),
             'description' => $request->input('description'),
             'price' => $request->input('price'),
@@ -19,23 +20,30 @@ class ApartmentController extends Controller
             'apartment' => $request->input('apartment'),
         ]);
 
+        $user = auth()->user();
+
+        $user->apartments()->save($apartment);
+
         $files = $request->file('image');
 
         foreach($files as $file)
         {
             $path = $file->store('images');
 
+            $url = Storage::url($path);
+
             $image = new Image;
 
-            $image->path = $path;
+            $image->path = $url;
 
             $apartment->images()->save($image);
         }
 
-        $apartment->save();
+        return response()->json($apartment, 201);
+    }
 
-        return response()->json([
-            $apartment
-        ], 201);
+    public function apartments(Request $request)
+    {
+        return Apartment::with('images')->get();
     }
 }

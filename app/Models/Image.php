@@ -13,6 +13,10 @@ class Image extends Model
         'path',
     ];
 
+    protected $hidden = [
+        'created_at', 'updated_at', 'imageable_type', 'imageable_id', 'id',
+    ];
+
     /** 
      * morphTo User or Apartment
      */

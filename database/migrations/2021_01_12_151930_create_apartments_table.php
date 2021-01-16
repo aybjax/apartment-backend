@@ -15,6 +15,7 @@ class CreateApartmentsTable extends Migration
     {
         Schema::create('apartments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
             $table->string('title', 20);
             $table->string('description', 200);
             $table->unsignedDecimal('price', 10, 2);

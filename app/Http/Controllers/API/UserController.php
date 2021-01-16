@@ -34,7 +34,24 @@ class UserController extends Controller
             'lastname' => $user->lastname,
             'email' => $user->email,
             'phone' => $user->phone,
-            'image' => $user->image->path,
+            'image' => data_get($user, 'image.path'),
+        ]);
+    }
+
+    /** */
+    public function show(Request $request, int $id)
+    {
+        error_log('hello');
+        $user = User::findOrFail($id);
+
+        return response()->json([
+            'id' => $user->id,
+            'username' => $user->username,
+            'firstname' => $user->firstname,
+            'lastname' => $user->lastname,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'image' => data_get($user, 'image.path'),
         ]);
     }
 
