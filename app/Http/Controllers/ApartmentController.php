@@ -39,7 +39,7 @@ class ApartmentController extends Controller
             $apartment->images()->save($image);
         }
 
-        return response()->json($apartment, 201);
+        return response()->json($apartment->fresh('images'), 201);
     }
 
     public function apartments(Request $request)
